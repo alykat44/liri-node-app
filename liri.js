@@ -5,8 +5,9 @@ var command = process.argv[2];
 var thing = process.argv[3];
 var Twitter = require('twitter');
 var params = {
-  screen_name: 'Aly@alybovee',
+  screen_name: '@alybovee',
   count: 20
+  
 };
 
 var keys = require('./keys');
@@ -19,9 +20,6 @@ var spotify = new Spotify({
 
 var request = require('request');
 var fs = require("fs");
-
-
-
 
 
 
@@ -66,13 +64,15 @@ function myTweets() {
       for (i = 0; i < tweets.length; i++) {
         var number = i + 1;
 
-        console.log(tweets);
+        // console.log(tweets);
         console.log('-----------------------');
         console.log([i + 1] + '. ' + tweets[i].text);
-        conosle.log('Tweeted on: ' + tweets[i].created_at);
+        console.log('Tweeted on: ' + tweets[i].created_at);
         console.log('------------------------');
 
       }
+    } else {
+      console.log(error);
     }
   });
 
@@ -83,19 +83,23 @@ function myTweets() {
 function spotifyThis(thing) {
   if (thing == null) {
     thing = 'The Sign';
+    
   }
 
-  spotify.search({ type: 'track', query: 'All the Small Things' }, function (err, data) {
-    if (err) {
-      return console.log('Error occurred: ' + err);
+  spotify.search({ type: 'track', query: thing }, function (error, data) {
+    if (error) {
+      console.log('Error occurred: ' + error);
+      return;
     }
 
-    console.log(data);
-    console.log('--------------------');
-    console.log('Artist(s): ' + data.tracks.item[0].artists[0].name);
+    /* console.log(data); */
+    /* console.log('track info'); */
+    /* console.log('--------------------'); */
+    console.log('Artist(s): ' + data.tracks.items[0].artists[0].name);
     console.log('Song Title: ' + data.tracks.items[0].name);
     console.log('Preview Link: ' + data.tracks.items[0].preview_url);
     console.log('Album: ' + data.tracks.items[0].album.name);
+    /* console.log('-----------------------'); */
   });
 
 }
@@ -110,11 +114,12 @@ function movieThis(thing) {
   }
   let request = require("request");
   let title = process.argv[2];
-  let queryUrl = `http://www.omdbapi.com/?t=${title}&y=&plot=short&apikey= 7501d130`;
+  let queryUrl = `http://www.omdbapi.com/?t=${thing}&y=&plot=short&apikey=7501d130`;
 
   request(queryUrl, function (error, response, body) {
-
+    console.log('success');
     if (!error && response.statusCode === 200) {
+      console.log('success');
       console.log(`Title: ${JSON.parse(body).Title}`);
       console.log(`Release Year: ${JSON.parse(body).Year}`);
       console.log(`Rating: ${JSON.parse(body).Rated}`);
@@ -131,16 +136,20 @@ function movieThis(thing) {
 }
 
 function random() {
-  fs.readFile("random.txt", "utf8", function (error, data) {
-    if (error) {
-      console.log(error);
+  
+    
+  fs.readFile('random.txt', "utf8", function (error, data) {
 
-    } else {
-      spotifyThis(data[1]);
-    }
-
-  });
+      var txt = data.split(',');
+      
+      spotifyThis(txt[1]);
+      
+      
+    });
 
 }
+
+
+
 
 
